@@ -4,12 +4,7 @@ const { isValidUrl } = require('../utils/validators'); //
 
 exports.createTask = async (req, res) => {
     try {
-        console.log("创建任务")
         let { videoUrl, userId, textContent, strategyList } = req.body;
-        console.log("@@videoUrl", req.body);
-        console.log("@@userId", userId);
-        console.log("@@textContent", textContent);
-        console.log("@@strategyList", strategyList);
 
         // ========== 参数处理 ==========
         // 统一转为数组格式
@@ -60,7 +55,6 @@ exports.createTask = async (req, res) => {
 exports.getTaskStatus = async (req, res) => {
     try {
         const task = await Task.findById(req.params.taskId);
-        // console.log("@@task", task)
         if (!task) return res.status(404).send('Task not found');
 
         const videos = await GeneratedVideo.findByTaskId(task.task_id);

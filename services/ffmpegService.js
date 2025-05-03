@@ -44,14 +44,11 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
         // 策略参数
         let strategyParams = strategyOptions.filter(item => strategyList.includes(item.id))
         try {
-            let allVideoDealResult = []
             // 本地视频执行以选的策略
             await Promise.all(videoPaths.map(async (item, index) => {
                 // allDealVideo = allDealVideo.concat(item)
                 const result = await processAllStrategies(strategyParams, item, index + 1, taskId, textContent)
-                allVideoDealResult.concat(result)
             }))
-            console.log("本地文处理完成的文件为：allVideoDealResult", allVideoDealResult)
             // 删除临时文件
             // await fs.rm(TASK_DIR, { recursive: true, force: true });
         } catch (err) {
@@ -63,8 +60,7 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
             // fileCount: outputFiles.length,
             ossPath: `${taskId}/processed`
         });
-        //等待5秒 在windows上测试有文件占用 缺少打包内容
-        await new Promise(resolve => setTimeout(resolve, 5000));
+
         // ==================== 压缩文件夹 ====================
         console.log("==================== 4.压缩文件夹 ====================")
         await compressFolder(`./temp/${taskId}/processed`, `./temp/${taskId}/${taskId}.zip`)
@@ -93,7 +89,6 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
         let dealDownload = await oss.generateSignedUrl(uploadResults[0]['ossPath'], 3600)
         //将 dealDownload http改为https
         dealDownload = dealDownload.replace("http", "https")
-        console.log("@@@dealDownload打印可下载结果", dealDownload)
 
         // ==================== 保存到数据库 ====================
         console.log("==================== 7.保存到数据库，更新redis任务 ====================")

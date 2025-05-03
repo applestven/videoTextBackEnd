@@ -126,7 +126,6 @@ exports.uploadFiles = async (files, options = {}) => {
 
 exports.downloadFile = async function (objectKey, downloadPath) {
     const decodedPath = new URL(objectKey).pathname;
-    console.log("@@downloadPath", downloadPath)
     // 确保目录存在
     const dir = path.dirname(downloadPath);
     if (!fs.existsSync(dir)) {
@@ -136,8 +135,8 @@ exports.downloadFile = async function (objectKey, downloadPath) {
     try {
         // 直接将远端文件下载并写入本地文件
         const result = await client.get(decodedPath, downloadPath);
-        console.log("client.get(decodedPath, downloadPath)", client.get(decodedPath, downloadPath))
-        console.log('Download complete:', result);
+        // console.log("client.get(decodedPath, downloadPath)", client.get(decodedPath, downloadPath))
+        // console.log('Download complete:', result);
         return result;
     } catch (err) {
         console.error('Download failed:', err);
