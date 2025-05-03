@@ -10,8 +10,8 @@ High-performance distributed video processing server with:
 ## ⚡ Quick Start
 ```bash
 git clone https://github.com/applestven/videoTextBackEnd.git
-cd ad-video-server
-chang .env
+cd videoTextBackEnd
+chang your .env
 npm install
 npm run init-db
 npm start
