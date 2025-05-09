@@ -23,3 +23,5 @@ logs/
 dist
 cache
 *.mp4
+.env
+bin

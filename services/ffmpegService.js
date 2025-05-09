@@ -34,12 +34,12 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
         console.log("==================== 2.下载处理完成 ====================")
         // 根据前端请求参数执行策略 (先写死)
         const strategyOptions = [
-            { id: 1, text: "模型1", strategy: "drawText" },
-            { id: 2, text: "模型2", strategy: "drawText2" },
-            { id: 3, text: "模型3", strategy: "drawText3" },
-            { id: 4, text: "模型4", strategy: "drawText4" },
-            { id: 5, text: "模型5", strategy: "drawText5" },
-            { id: 10, text: "模型10", strategy: "drawText10" },
+            { id: 1, text: "模型1", strategy: "labelOverlay", args: { direction: "straight" } },
+            { id: 2, text: "模型2", strategy: "labelOverlay", args: { direction: "right" } },
+            { id: 3, text: "模型3", strategy: "labelOverlay", args: { direction: "left" } },
+            { id: 4, text: "模型4", strategy: "labelOverlay", args: { direction: "bottomRight" } },
+            { id: 5, text: "模型5", strategy: "labelOverlay", args: { direction: "topRight" } },
+            { id: 6, text: "模型6", strategy: "labelOverlay", args: { direction: "bottomLeft" } },
         ]
         // 策略参数
         let strategyParams = strategyOptions.filter(item => strategyList.includes(item.id))
@@ -52,7 +52,10 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
             // 删除临时文件
             // await fs.rm(TASK_DIR, { recursive: true, force: true });
         } catch (err) {
-            console.log("视频执行策略错误")
+            console.log("视频执行策略错误,中断任务")
+            await Task.updateStatus(taskId, 'failed', error.message);
+            logger.error(`Task ${taskId} failed,视频执行策略错误,中断任务`, error);
+            return false;
         }
         console.log("==================== 3.ffmpeg处理视频完成 ====================")
         // 上传开始
@@ -129,7 +132,7 @@ module.exports = {
 // 一条视频执行多个不同的策略
 async function processAllStrategies(strategyParams, videoPath, index, taskId, textContent) {
     //针对策略特殊处理
-    strategyParams.strategy = "drawText" && (textContent = textContent.split("").join(","))
+    // strategyParams.strategy = "drawText" && (textContent = textContent.split("").join(","))
     try {
         // 创建所有异步任务的 Promise 数组
         const ffmpegPromises = strategyParams.map((item) => {
@@ -138,7 +141,8 @@ async function processAllStrategies(strategyParams, videoPath, index, taskId, te
                 input: videoPath,
                 // output: path.join(OUTPUT_DIR, `output-${index}-${item.id}.mp4`),// output-视频index-策略id
                 output: `./temp/${taskId}/processed/output-${index}-${item.id}.mp4`,// output-视频index-策略id
-                text: `"${textContent}"`
+                text: `"${textContent}"`,
+                ...item.args
             };
             return runFFMPEGStrategy(options); // 假设返回 Promise
         });

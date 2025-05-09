@@ -28,7 +28,7 @@ async function runFFMPEGStrategy(options) {
 
         // 捕获错误输出
         ffmpegProcess.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
+            // console.error(`stderr: ${data}`);
         });
 
         // 监听进程结束
