@@ -51,7 +51,7 @@ const processVideoTask = async (taskId, videoUrl, textContent = "AD强模拟数�
             }))
             // 删除临时文件
             // await fs.rm(TASK_DIR, { recursive: true, force: true });
-        } catch (err) {
+        } catch (error) {
             console.log("视频执行策略错误,中断任务")
             await Task.updateStatus(taskId, 'failed', error.message);
             logger.error(`Task ${taskId} failed,视频执行策略错误,中断任务`, error);
